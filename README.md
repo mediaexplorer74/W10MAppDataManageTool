@@ -1,6 +1,9 @@
 # Application Data Manage Tool 2.3.1
+
   Created by Mahdi Ghiasi
+
 (forked from AppDataManageTool 2.2 Beta and modernized a little by [M][E] in 2021)
+
 Application Data Manage Tool is a tool for Windows 10 Mobile devices to create backups from current state of apps 
 and games, and restore them at a later time, or to another phone, or to your phone after a factory reset.
 
@@ -10,6 +13,9 @@ then you can copy them to your PC and then to any phone so you can restore that 
 Additionally, you can reset the state of apps, which is almost the same as reinstalling them, but is faster  and also it can be done on some system apps (which you can't reinstall them)
 
 *In order to use this tool, your device must be interop unlocked.*
+
+![screenshot1](shot1.png "screenshot1")
+![screenshot2](shot2.png "screenshot2")
 
 ---
 
