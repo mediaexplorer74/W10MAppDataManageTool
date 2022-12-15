@@ -46,7 +46,9 @@ namespace LightBuzz.Archiver
         /// </summary>
         /// <param name="source">The folder containing the files to compress.</param>
         /// <param name="destination">The compressed zip file.</param>
-        public async Task Compress(StorageFolder source, StorageFile destination, CompressionLevel compressionLevel)
+        public async Task Compress(StorageFolder source, 
+            StorageFile destination, 
+            CompressionLevel compressionLevel)
         {
             List<StorageFolder> l = new List<StorageFolder>();
             l.Add(source);
@@ -54,7 +56,9 @@ namespace LightBuzz.Archiver
             await Compress(l, destination, compressionLevel);
         }
 
-        public async Task Compress(List<StorageFolder> sources, StorageFile destination, CompressionLevel compressionLevel)
+        public async Task Compress(List<StorageFolder> sources, 
+            StorageFile destination, 
+            CompressionLevel compressionLevel)
         {
             log = new List<ArchiverError>();
 
@@ -66,7 +70,8 @@ namespace LightBuzz.Archiver
                     foreach (var item in sources)
                     {
                         curRoot = item.Name;
-                        await AddFolderToArchive(item, archive, item.Name + "/", compressionLevel);
+                        await AddFolderToArchive(item, archive, 
+                            item.Name + "/", compressionLevel);
                     }
                 }
             }
@@ -77,7 +82,9 @@ namespace LightBuzz.Archiver
         /// </summary>
         /// <param name="source">The file to compress.</param>
         /// <param name="destination">The compressed zip file.</param>
-        public async void Compress(StorageFile source, StorageFile destination, CompressionLevel compressionLevel)
+        public async void Compress(StorageFile source, 
+            StorageFile destination, 
+            CompressionLevel compressionLevel)
         {
             using (Stream stream = await destination.OpenStreamForWriteAsync())
             {
@@ -169,11 +176,13 @@ namespace LightBuzz.Archiver
                 {
                     int counter = 0;
 
-                    IEnumerable<ZipArchiveEntry> notSkippedEntries = from ZipArchiveEntry z in archive.Entries
-                                                                     let destStr = z.FullName.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries)[0]
-                                                                     let dest = destinations.ContainsKey(destStr) ? destinations[destStr] : null
-                                                                     where dest != null
-                                                                     select z;
+                    IEnumerable<ZipArchiveEntry> notSkippedEntries = 
+                        from ZipArchiveEntry z in archive.Entries
+                        let destStr = z.FullName.Split(new char[] { '/' }, 
+                            StringSplitOptions.RemoveEmptyEntries)[0]
+                        let dest = destinations.ContainsKey(destStr) ? destinations[destStr] : null
+                        where dest != null
+                        select z;
 
                     int total = notSkippedEntries.Count();
 
@@ -183,7 +192,8 @@ namespace LightBuzz.Archiver
                         {
                             StorageFolder destination;
 
-                            string destName = entry.FullName.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries)[0];
+                            string destName = entry.FullName.Split(new char[] { '/' }, 
+                                StringSplitOptions.RemoveEmptyEntries)[0];
                             destination = destinations[destName];
                             
                             OnDecompressingProgress(new DecompressingEventArgs(counter, total, log, destName));
@@ -201,7 +211,8 @@ namespace LightBuzz.Archiver
                                     }
                                     catch (Exception ex)
                                     {
-                                        log.Add(new ArchiverError("Folder creation failed: " + ex.Message, folderName));
+                                        log.Add(new ArchiverError("Folder creation failed: " 
+                                            + ex.Message, folderName));
                                     }
                             }
                             else
@@ -215,9 +226,11 @@ namespace LightBuzz.Archiver
 
                                     try
                                     {
-                                        StorageFile file = await destination.CreateFileAsync(fileName, CreationCollisionOption.FailIfExists);
+                                        StorageFile file = await destination.CreateFileAsync(
+                                            fileName, CreationCollisionOption.FailIfExists);
 
-                                        using (IRandomAccessStream uncompressedFileStream = await file.OpenAsync(FileAccessMode.ReadWrite))
+                                        using (IRandomAccessStream uncompressedFileStream = 
+                                            await file.OpenAsync(FileAccessMode.ReadWrite))
                                         {
                                             using (Stream data = uncompressedFileStream.AsStreamForWrite())
                                             {
@@ -240,21 +253,25 @@ namespace LightBuzz.Archiver
         }
 
         /// <summary>
-        /// Adds the specified folder, along with its files and sub-folders, to the specified archive.
+        /// Adds the specified folder, along with its files 
+        /// and sub-folders, to the specified archive.
         /// Creadits to Jin Yanyun
         /// http://www.rapidsnail.com/Tutorial/t/2012/116/40/23786/windows-and-development-winrt-to-zip-files-unzip-and-folder-zip-compression.aspx
         /// </summary>
         /// <param name="folder">The folder to add.</param>
         /// <param name="archive">The zip archive.</param>
         /// <param name="separator">The directory separator character.</param>
-        private async Task AddFolderToArchive(StorageFolder folder, ZipArchive archive, string separator, CompressionLevel compLevel)
+        private async Task AddFolderToArchive(StorageFolder folder, 
+            ZipArchive archive, string separator, 
+            CompressionLevel compLevel)
         {
             bool hasFiles = false;
             foreach (StorageFile file in await folder.GetFilesAsync())
             {
                 try
                 {
-                    ZipArchiveEntry entry = archive.CreateEntry(separator + file.Name, compLevel);
+                    ZipArchiveEntry entry = archive.CreateEntry(
+                        separator + file.Name, compLevel);
 
                     using (Stream stream = entry.Open())
                     {
@@ -271,7 +288,9 @@ namespace LightBuzz.Archiver
                 finally
                 {
                     _processedFilesCount++;
-                    OnCompressingProgress(new CompressingEventArgs(_processedFilesCount, curRoot, log));
+                    OnCompressingProgress(
+                        new CompressingEventArgs(_processedFilesCount, 
+                        curRoot, log));
                 }
             }
 
@@ -280,7 +299,9 @@ namespace LightBuzz.Archiver
 
             foreach (var storageFolder in await folder.GetFoldersAsync())
             {
-                await AddFolderToArchive(storageFolder, archive, separator + storageFolder.Name + "/", compLevel);
+                await AddFolderToArchive(storageFolder, 
+                    archive, 
+                    separator + storageFolder.Name + "/", compLevel);
             }
         }
 
@@ -325,7 +346,9 @@ namespace LightBuzz.Archiver
         public string CurrentRootFolder { get; set; }
         public List<ArchiverError> Log { get; set; }
 
-        public CompressingEventArgs(int processedFilesCount, string curRootFolder, List<ArchiverError> log)
+        public CompressingEventArgs(int processedFilesCount, 
+            string curRootFolder, 
+            List<ArchiverError> log)
         {
             ProcessedFilesCount = processedFilesCount;
             CurrentRootFolder = curRootFolder;
@@ -341,7 +364,10 @@ namespace LightBuzz.Archiver
         public List<ArchiverError> Log { get; set; }
         public string CurrentRootFolder { get; set; }
 
-        public DecompressingEventArgs(int processed, int total, List<ArchiverError> log, string curRoot)
+        public DecompressingEventArgs(int processed, 
+            int total, 
+            List<ArchiverError> log, 
+            string curRoot)
         {
             ProcessedEntries = processed;
             TotalEntries = total;

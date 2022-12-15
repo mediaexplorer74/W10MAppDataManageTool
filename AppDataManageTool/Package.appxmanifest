@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" xmlns:iot="http://schemas.microsoft.com/appx/manifest/iot/windows10" xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" xmlns:uap4="http://schemas.microsoft.com/appx/manifest/uap/windows10/4" xmlns:mobile="http://schemas.microsoft.com/appx/manifest/mobile/windows10" xmlns:uap2="http://schemas.microsoft.com/appx/manifest/uap/windows10/2" IgnorableNamespaces="uap mp rescap iot uap3 uap4 mobile uap2">
-  <Identity Name="WM10AppDataManageTool-8b64" Publisher="CN=mediaexplorer" Version="2.3.1.0" />
-  <mp:PhoneIdentity PhoneProductId="524695aa-9557-4be3-8b64-d9fd6aae21aa" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Identity Name="WM10AppDataManageToolV2" Publisher="CN=Admin" Version="2.4.0.0" />
+  <mp:PhoneIdentity PhoneProductId="554695aa-9557-4353-8b64-d9fd6aae2125" PhonePublisherId="05500025-3500-0000-0000-000000000000" />
   <Properties>
     <DisplayName>WM10AppDataManageTool</DisplayName>
     <PublisherDisplayName>Mahdi Ghiasi</PublisherDisplayName>
@@ -31,7 +31,6 @@
   <Capabilities>
     <Capability Name="privateNetworkClientServer" />
     <Capability Name="internetClientServer" />
-    <Capability Name="codeGeneration" />
     <iot:Capability Name="systemManagement" />
     <uap3:Capability Name="remoteSystem" />
     <uap:Capability Name="videosLibrary" />
@@ -45,7 +44,6 @@
     <mobile:Capability Name="recordedCallsFolder" />
     <uap2:Capability Name="phoneCallHistoryPublic" />
     <uap:Capability Name="removableStorage" />
-    <uap:Capability Name="phoneCall" />
     <uap:Capability Name="userAccountInformation" />
     <rescap:Capability Name="id_cap_runtime_config" />
     <rescap:Capability Name="id_cap_oem_custom" />

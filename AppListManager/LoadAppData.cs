@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -41,8 +42,10 @@ namespace MahdiGhiasi.AppListManager
 
     public class LoadAppData
     {
-        public static ObservableCollection<AppData> appsData { get; set; } = new ObservableCollection<AppData>();
-        public static Dictionary<string, AppData> familyNameAppData { get; set; } = new Dictionary<string, AppData>();
+        public static ObservableCollection<AppData> appsData { get; set; } 
+            = new ObservableCollection<AppData>();
+        public static Dictionary<string, AppData> familyNameAppData { get; set; } 
+            = new Dictionary<string, AppData>();
 
         public delegate void LoadingEventHandler(object sender, LoadingEventArgs e);
 
@@ -70,17 +73,30 @@ namespace MahdiGhiasi.AppListManager
 
         public async Task LoadApps()
         {
-            Windows.Management.Deployment.PackageManager packageManager = new Windows.Management.Deployment.PackageManager();
+            Windows.Management.Deployment.PackageManager packageManager 
+                = new Windows.Management.Deployment.PackageManager();
+
             IEnumerable<Windows.ApplicationModel.Package> packages;
 
             if (LoadLegacyAppsToo)
-                packages = (IEnumerable<Windows.ApplicationModel.Package>)packageManager.FindPackagesForUserWithPackageTypes("", PackageTypes.Bundle | PackageTypes.Framework | PackageTypes.Main | PackageTypes.None | PackageTypes.Resource | PackageTypes.Xap);
+            {
+                packages = (IEnumerable<Windows.ApplicationModel.Package>)
+                    packageManager.FindPackagesForUserWithPackageTypes("", 
+                    PackageTypes.Bundle 
+                    | PackageTypes.Framework
+                    | PackageTypes.Main 
+                    | PackageTypes.None 
+                    | PackageTypes.Resource 
+                    | PackageTypes.Xap);
+            }
             else
-                packages = (IEnumerable<Windows.ApplicationModel.Package>)packageManager.FindPackagesForUser("");
+            {
+                packages = (IEnumerable<Windows.ApplicationModel.Package>)
+                    packageManager.FindPackagesForUser("");
+            }
 
             int count = packages.Count();
             int progress = 0;
-
 
             StorageFolder localCacheFolder = ApplicationData.Current.LocalCacheFolder;
 
@@ -90,20 +106,31 @@ namespace MahdiGhiasi.AppListManager
             StorageFolder logosFolder = await localCacheFolder.GetFolderAsync("Logos");
 
             HashSet<string> existingAppFamilyNames = new HashSet<string>();
+            
             foreach (var item in packages)
             {
                 System.Diagnostics.Debug.WriteLine(progress);
 
-                AppData appD = await LoadModernAndLegacyAppData(item, logosFolder);
-                if ((appD != null) && (appD.PackageId != ""))
+                //RnD: tune folder access
+
+                try
                 {
-                    appsData.AddSorted(appD, new AppDataNameComparer());
-                    familyNameAppData.Add(appD.FamilyName, appD);
-                    existingAppFamilyNames.Add(appD.FamilyName);
+                    AppData appD = await LoadModernAndLegacyAppData(item, logosFolder);
+
+                    if ((appD != null) && (appD.PackageId != ""))
+                    {
+                        appsData.AddSorted(appD, new AppDataNameComparer());
+                        familyNameAppData.Add(appD.FamilyName, appD);
+                        existingAppFamilyNames.Add(appD.FamilyName);
+                    }
+                    else if (appD != null)
+                    {
+                        existingAppFamilyNames.Add(appD.FamilyName);
+                    }
                 }
-                else if (appD != null)
+                catch (Exception ex)
                 {
-                    existingAppFamilyNames.Add(appD.FamilyName);
+                    Debug.WriteLine("[ex] LoadModernAndLegacyAppData Exception: " + ex.Message);
                 }
 
                 progress++;
@@ -124,12 +151,14 @@ namespace MahdiGhiasi.AppListManager
                 appsData.Remove(item);
             }
 
+            //RnD
+            await SaveAppList(); 
 
-            SaveAppList();
             OnLoadCompleted();
-        }
+        }//LoadApps
         
-        private async Task<AppData> LoadModernAndLegacyAppData(Windows.ApplicationModel.Package item, StorageFolder saveLogoLocation)
+        private async Task<AppData> LoadModernAndLegacyAppData(
+            Windows.ApplicationModel.Package item, StorageFolder saveLogoLocation)
         {
             AppData data = new AppData();
             try
@@ -172,7 +201,9 @@ namespace MahdiGhiasi.AppListManager
                     {
                         var stream = await x.First().DisplayInfo.GetLogo(new Size(50, 50)).OpenReadAsync();
                         BitmapDecoder decoder = await BitmapDecoder.CreateAsync(stream);
+                        
                         bmp = new WriteableBitmap((int)decoder.PixelWidth, (int)decoder.PixelHeight);
+                        
                         bmp.SetSource(stream);
 
                         //await bmp.SaveAsync(saveLogoLocation, data.FamilyName + ".png");
@@ -213,7 +244,9 @@ namespace MahdiGhiasi.AppListManager
                 string appTag = text.Substring(text.IndexOf("<App "));
                 appTag = appTag.Substring(0, appTag.IndexOf(">"));
 
-                publisherName = appTag.Substring(appTag.IndexOf(@"Publisher=""") + @"Publisher=""".Length);
+                publisherName = appTag.Substring(appTag.IndexOf(@"Publisher=""") 
+                    + @"Publisher=""".Length);
+                
                 publisherName = publisherName.Substring(0, publisherName.IndexOf("\""));
                 publisherName = GetNameStringFromManifestFormat(publisherName);
 
@@ -229,11 +262,19 @@ namespace MahdiGhiasi.AppListManager
             {
                 string appxManifestData = await FileIO.ReadTextAsync((StorageFile)appxManifest);
 
-                string publisher = appxManifestData.Substring(appxManifestData.IndexOf("<PublisherDisplayName>") + "<PublisherDisplayName>".Length);
+                string publisher = appxManifestData.Substring(
+                    appxManifestData.IndexOf("<PublisherDisplayName>") + "<PublisherDisplayName>".Length);
+                
                 publisher = publisher.Substring(0, publisher.IndexOf("</PublisherDisplayName>"));
 
-                if ((publisher.Length > "ms-resource:".Length) && (publisher.Substring(0, "ms-resource:".Length) == "ms-resource:"))
+                if
+                (
+                    (publisher.Length > "ms-resource:".Length) &&
+                    (publisher.Substring(0, "ms-resource:".Length) == "ms-resource:")
+                )
+                {
                     publisher = "";
+                }
 
                 return publisher;
             }
@@ -241,6 +282,7 @@ namespace MahdiGhiasi.AppListManager
             return "";
         }
 
+        // GetDataFolder
         public static async Task<string> GetDataFolder(AppData data)
         {
             string assumedDataPath = "";
@@ -271,7 +313,9 @@ namespace MahdiGhiasi.AppListManager
                 }
             }
             else
+            {
                 assumedDataPath = "C:\\Data\\Users\\DefApps\\APPDATA\\Local\\Packages\\" + data.FamilyName;
+            }
 
             try
             {
@@ -302,7 +346,8 @@ namespace MahdiGhiasi.AppListManager
 
         public static async Task SaveAppList()
         {
-            string serializedData = Newtonsoft.Json.JsonConvert.SerializeObject(appsData, Newtonsoft.Json.Formatting.Indented);
+            string serializedData = 
+                Newtonsoft.Json.JsonConvert.SerializeObject(appsData, Newtonsoft.Json.Formatting.Indented);
 
             StorageFolder localCacheFolder = ApplicationData.Current.LocalCacheFolder;
             StorageFile cacheFile = await localCacheFolder.CreateFileAsync("applistcache.txt", CreationCollisionOption.ReplaceExisting);

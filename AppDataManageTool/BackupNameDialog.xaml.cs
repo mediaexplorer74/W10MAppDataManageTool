@@ -13,7 +13,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Content Dialog item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
+// The Content Dialog item template is
+// documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace AppDataManageTool
 {
@@ -31,13 +32,15 @@ namespace AppDataManageTool
             set { Box.Text = value; }
         }
 
-        private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs e)
+        private void ContentDialog_PrimaryButtonClick(ContentDialog sender, 
+            ContentDialogButtonClickEventArgs e)
         {
             if (Text.Length == 0)
                 e.Cancel = true;
         }
 
-        private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs e)
+        private void ContentDialog_SecondaryButtonClick(ContentDialog sender, 
+            ContentDialogButtonClickEventArgs e)
         {
         }
 

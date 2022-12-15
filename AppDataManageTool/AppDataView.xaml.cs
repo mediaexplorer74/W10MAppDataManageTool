@@ -57,7 +57,8 @@ namespace AppDataManageTool
                 commandBar.Visibility = Visibility.Collapsed;
             }
 
-            List<AppData> appsPlus = new List<AppData>(LoadAppData.appsData.Where(x => x.PackageDataFolder.Length > 0));
+            List<AppData> appsPlus = new List<AppData>(
+                LoadAppData.appsData.Where(x => x.PackageDataFolder.Length > 0));
             for (char i = 'A'; i <= 'Z'; i++)
             {
                 appsPlus.Add(new AppData()
@@ -71,8 +72,9 @@ namespace AppDataManageTool
 
             appsPlus = appsPlus.OrderBy(x => x.DisplayName).ToList();
 
-            ObservableCollection<DataGroup> groupedData = new ObservableCollection<DataGroup>(appsPlus.GroupBy((d) => ItemsGroupName(d)
-            , (key, items) => new DataGroup()
+            ObservableCollection<DataGroup> groupedData = 
+                new ObservableCollection<DataGroup>(appsPlus.GroupBy((d) => ItemsGroupName(d)
+                , (key, items) => new DataGroup()
             {
                 Name = key,
                 Items = new ObservableCollection<AppData>(items)
@@ -85,7 +87,8 @@ namespace AppDataManageTool
                                                                 select x).ToList());
             }
 
-            LoadAppData.appsData.CollectionChanged += async (object s, System.Collections.Specialized.NotifyCollectionChangedEventArgs ee) =>
+            LoadAppData.appsData.CollectionChanged += async (object s, 
+                System.Collections.Specialized.NotifyCollectionChangedEventArgs ee) =>
             {
                 if (ee.NewItems != null)
                 {
@@ -199,7 +202,10 @@ namespace AppDataManageTool
                 AppDetails.DataContext = null;
 
                 AdvancedDetails.Visibility = Visibility.Collapsed;
-                ShowAdvancedDetails.Visibility = App.hiddenMode ? Visibility.Visible : Visibility.Collapsed;
+                
+                ShowAdvancedDetails.Visibility = App.hiddenMode 
+                    ? Visibility.Visible 
+                    : Visibility.Collapsed;
 
                 AppData data = (AppData)listView.SelectedItem;
                 AppDataExtension dataEx = App.GetAppDataEx(data);
@@ -211,18 +217,23 @@ namespace AppDataManageTool
 
                 currentApp = dataEx;
 
-                List<Backup> backupsContainingThisApp = (from Backup b in BackupManager.currentBackups
-                                                         where b.Apps.Any(x => x.FamilyName == currentApp.familyName)
-                                                         select b).ToList();
+                List<Backup> backupsContainingThisApp = 
+                    (from Backup b in BackupManager.currentBackups
+                     where b.Apps.Any(x => x.FamilyName == currentApp.familyName)
+                     select b).ToList();
 
-                noBackupsAvailable.Visibility = backupsContainingThisApp.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+                noBackupsAvailable.Visibility = backupsContainingThisApp.Count == 0 
+                    ? Visibility.Visible 
+                    : Visibility.Collapsed;
+
                 backupsList.ItemsSource = backupsContainingThisApp;
 
                 await dataEx.CalculateSize();
             }
         }
 
-        private async void CopyToClipboardTextBlock_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void CopyToClipboardTextBlock_Tapped(object sender, 
+            TappedRoutedEventArgs e)
         {
             var pkg = new DataPackage();
             pkg.SetText(((TextBlock)sender).Text);
@@ -241,7 +252,8 @@ namespace AppDataManageTool
         {
             var x = new RegistryHelper.CRegistryHelper();
 
-            foreach (var i in x.GetRegistryItems(RegistryHelper.RegHives.HKEY_LOCAL_MACHINE, "SYSTEM"))
+            foreach (var i in 
+              x.GetRegistryItems(RegistryHelper.RegHives.HKEY_LOCAL_MACHINE, "SYSTEM"))
             {
                 MessageDialog md = new MessageDialog(i.Name);
                 await md.ShowAsync();
@@ -312,7 +324,9 @@ namespace AppDataManageTool
 
         private async Task StartCreatingBackup(List<CompactAppData> apps)
         {
-            PageStatus_CurrentApp = LoadAppData.appsData.First(x => x.PackageId == apps.OrderBy(y => y.DisplayName).Last().PackageId);
+            PageStatus_CurrentApp = LoadAppData.appsData.First(
+                x => x.PackageId == apps.OrderBy(y => y.DisplayName).Last().PackageId);
+            
             PageStatus_IsShowingDetails = AppDetails.Visibility == Visibility.Visible;
 
             var dialog = new BackupNameDialog(BackupManager.GenerateBackupName());
@@ -332,7 +346,9 @@ namespace AppDataManageTool
 
                     b.Apps.AddRange(apps);
 
-                    Frame.Navigate(typeof(BackupProgress), Newtonsoft.Json.JsonConvert.SerializeObject(new BackupProgressMessage() { backup = b, IsRestore = false }));
+                    Frame.Navigate(typeof(BackupProgress), 
+                        Newtonsoft.Json.JsonConvert.SerializeObject(
+                            new BackupProgressMessage() { backup = b, IsRestore = false }));
                 }
                 catch (Exception ex)
                 {
@@ -350,7 +366,13 @@ namespace AppDataManageTool
 
         private async void ResetAppButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            MessageDialog md = new MessageDialog("The data will be permanently lost. Consider creating a backup before this.\r\n\r\nNote: Doing this on 'system apps' is not safe, and might cause your phone to stop working.", "Are you sure you want to reset the state of this app?");
+            MessageDialog md = new MessageDialog(
+                "The data will be permanently lost. " +
+                "Consider creating a backup before this.\r\n\r\n" +
+                "Note: Doing this on 'system apps' is not safe, " +
+                "and might cause your phone to stop working.", 
+                "Are you sure you want to reset the state of this app?");
+            
             md.Commands.Add(new UICommand("Yes") { Id = 1 });
             md.Commands.Add(new UICommand("No") { Id = 0 });
             md.DefaultCommandIndex = 1;
@@ -385,7 +407,8 @@ namespace AppDataManageTool
             }
         }
 
-        private void backupsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void backupsList_SelectionChanged(object sender, 
+            SelectionChangedEventArgs e)
         {
             PageStatus_CurrentApp = currentApp.TheApp;
             PageStatus_IsShowingDetails = true;
@@ -394,7 +417,8 @@ namespace AppDataManageTool
         }
 
         //Create archive from installation path !
-        private async void ZipFromInstallFilesAppButton_Tapped(object sender, TappedRoutedEventArgs e)
+        private async void ZipFromInstallFilesAppButton_Tapped(object sender, 
+            TappedRoutedEventArgs e)
         {
             HiddenThings ht = new HiddenThings();
 

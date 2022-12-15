@@ -10,10 +10,10 @@ namespace AppDataManageTool
 {
     class AppListCacheUpdater
     {
-
+        /*
         private static async Task UpdateStatusBar(string message, double? val = null)
         {
-           /* if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+           / * if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
                 var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
                 if (statusBar != null)
@@ -30,15 +30,17 @@ namespace AppDataManageTool
                         await statusBar.ProgressIndicator.HideAsync();
                     }
                 }
-            }*/
+            }* /
         }
+        */
 
-        private static async void LoadAppData_LoadingProgress(object sender, LoadingEventArgs e)
+        // async
+        private static void LoadAppData_LoadingProgress(object sender, LoadingEventArgs e)
         {
             int percent = (int)Math.Round((100.0 * e.Current) / e.Total);
             //await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
             //{
-            await UpdateStatusBar("Updating app list cache " + percent.ToString() + "%");
+            //await UpdateStatusBar("Updating app list cache " + percent.ToString() + "%");
             //});
         }
 
@@ -67,7 +69,7 @@ namespace AppDataManageTool
 
                       ladInstance.LoadingProgress -= LoadAppData_LoadingProgress;
 
-                      await UpdateStatusBar(null);
+                      //await UpdateStatusBar(null);
 
                       App.updateCacheInProgress = false;
                   });

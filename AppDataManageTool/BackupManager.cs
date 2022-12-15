@@ -12,8 +12,14 @@ namespace AppDataManageTool
 {
     public enum BackupState
     {
-        Initializing, Compressing, WritingMetadata, Finished,
-        ResettingAppData, Decompressing, ResettingAppData2, Finalizing2
+        Initializing, 
+        Compressing, 
+        WritingMetadata, 
+        Finished,
+        ResettingAppData, 
+        Decompressing, 
+        ResettingAppData2, 
+        Finalizing2
     }
 
 
@@ -25,8 +31,10 @@ namespace AppDataManageTool
         public string Message2 { get; set; }
         public List<ArchiverError> Log { get; set; }
 
+
         // Constructor. 
-        public BackupEventArgs(double progress, BackupState state, string message, string message2, List<ArchiverError> log)
+        public BackupEventArgs(double progress, BackupState state, 
+            string message, string message2, List<ArchiverError> log)
         {
             Progress = progress;
             State = state;
@@ -43,7 +51,17 @@ namespace AppDataManageTool
 
         public static List<Backup> currentBackups;
 
-        public static readonly string[] deletableFolders = new string[] { "AC", "AppData", "LocalCache", "LocalState", "RoamingState", "Settings", "SystemAppData", "TempState" };
+        public static readonly string[] deletableFolders = new string[] 
+        { 
+            "AC", 
+            "AppData", 
+            "LocalCache", 
+            "LocalState", 
+            "RoamingState", 
+            "Settings", 
+            "SystemAppData", 
+            "TempState" 
+        };
 
         protected virtual void OnBackupProgress(BackupEventArgs e)
         {
@@ -70,7 +88,8 @@ namespace AppDataManageTool
 
                 try
                 {
-                    backupLocation = await StorageFolder.GetFolderFromPathAsync(App.BackupDestination);
+                    backupLocation = await StorageFolder.GetFolderFromPathAsync(
+                        App.BackupDestination);
                 }
                 catch
                 {
@@ -84,15 +103,25 @@ namespace AppDataManageTool
                     OnBackupProgress(new LoadingEventArgs(i, backups.Count));
 
                     StorageFolder folder = backups[i];
-                    StorageFile metadata = await folder.TryGetItemAsync("metadata.json") as StorageFile;
-                    StorageFile data = await folder.TryGetItemAsync("data.zip") as StorageFile;
 
-                    if ((metadata != null) && (data != null)) //It's a valid backup.
+                    StorageFile metadata = 
+                        await folder.TryGetItemAsync("metadata.json") as StorageFile;
+
+                    if (metadata != null)
                     {
-                        string metadataText = await FileIO.ReadTextAsync(metadata);
+                        StorageFile data =
+                            await folder.TryGetItemAsync("data.zip") as StorageFile;
 
-                        Backup b = Newtonsoft.Json.JsonConvert.DeserializeObject<Backup>(metadataText);
-                        currentBackups.Add(b);
+
+                        //if ((metadata != null) && (data != null)) 
+                        //It's a valid backup.
+                        if (data != null)
+                        {
+                            string metadataText = await FileIO.ReadTextAsync(metadata);
+
+                            Backup b = Newtonsoft.Json.JsonConvert.DeserializeObject<Backup>(metadataText);
+                            currentBackups.Add(b);
+                        }
                     }
                 }
                 OnBackupProgress(new LoadingEventArgs(backups.Count, backups.Count));

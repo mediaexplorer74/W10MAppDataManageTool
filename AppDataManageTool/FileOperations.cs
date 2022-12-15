@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -127,9 +128,9 @@ namespace AppDataManageTool
             {
                 folder = await StorageFolder.GetFolderFromPathAsync(path);
             }
-            catch
+            catch (Exception ex)
             {
-
+                Debug.WriteLine("[ex] GetFolder ("+path+") Exception : " + ex.Message);
             }
 
             return folder;
@@ -140,7 +141,10 @@ namespace AppDataManageTool
             string curPath = path;
             List<string> directoriesToBeCreated = new List<string>();
             StorageFolder folder = null;
-            while (true)
+            
+            //RnD
+
+            if (1==1)//while (true)
             {
                 folder = await GetFolder(curPath);
 
@@ -151,13 +155,16 @@ namespace AppDataManageTool
                 }
                 else
                 {
-                    break;
+                    //break;
                 }
             }
 
             for (int i = directoriesToBeCreated.Count - 1; i >= 0; i--)
             {
-                folder = await folder.CreateFolderAsync(directoriesToBeCreated[i]);
+                if (folder != null)
+                {
+                    folder = await folder.CreateFolderAsync(directoriesToBeCreated[i]);
+                }
             }
         }
 

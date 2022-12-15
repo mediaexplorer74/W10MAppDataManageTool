@@ -25,7 +25,10 @@ namespace AppDataManageTool
     sealed partial class App : Application
     {
         private static ObservableCollection<AppDataExtension> appsSizeData = new ObservableCollection<AppDataExtension>();
-        public static string BackupDestination = @"C:\Data\Users\Public\Backups";
+        
+        //public static string BackupDestination = @"C:\Users\Admin\Backups";    //Win10/11
+        public static string BackupDestination = @"C:\Data\Users\Public\Backups"; // W10M
+
         public static bool AllowCompress = false;
         public static int secretCodeCounter = 0;
         public static bool hiddenMode = false;
@@ -39,9 +42,9 @@ namespace AppDataManageTool
         public App()
         {
             
-            Microsoft.ApplicationInsights.WindowsAppInitializer.InitializeAsync(
-                Microsoft.ApplicationInsights.WindowsCollectors.Metadata |
-                Microsoft.ApplicationInsights.WindowsCollectors.Session);
+            //Microsoft.ApplicationInsights.WindowsAppInitializer.InitializeAsync(
+            //    Microsoft.ApplicationInsights.WindowsCollectors.Metadata |
+            //    Microsoft.ApplicationInsights.WindowsCollectors.Session);
             
             this.InitializeComponent();
             this.Suspending += OnSuspending;

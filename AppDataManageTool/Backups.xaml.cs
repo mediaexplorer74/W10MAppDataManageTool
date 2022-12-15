@@ -1,6 +1,7 @@
 ﻿using MahdiGhiasi.AppListManager;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -152,8 +153,10 @@ namespace AppDataManageTool
                 StorageFile dataFile = (StorageFile)await folder.GetItemAsync("data.zip");
                 BackupSizeText.Text = FileOperations.GetFileSizeString((await dataFile.GetBasicPropertiesAsync()).Size);
             }
-            catch (Exception e1)
+            catch (Exception ex)
             {
+                Debug.WriteLine("[ex] Exception: " + ex.Message);
+
                 MessageDialog md = new MessageDialog("Item "+ item.Name + " has a wrong name \n (get right name from metadata.json \n and apply to folder name!!!) ");
                 md.Commands.Add(new UICommand("OK") { Id = 1 });
                 //md.Commands.Add(new UICommand("No") { Id = 0 });

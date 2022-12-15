@@ -1,6 +1,7 @@
 ﻿using MahdiGhiasi.AppListManager;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -44,14 +45,16 @@ namespace AppDataManageTool
 
             InitSettings();
 
-            versionNum.Text = "v 2.3.1";// + UpdateChecker.GetAppVersionString(false);
+            versionNum.Text = "v 2.4.0";// + UpdateChecker.GetAppVersionString(false);
         }
 
         private async void InitSettings()
         {
-            var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            ApplicationDataContainer localSettings = 
+                Windows.Storage.ApplicationData.Current.LocalSettings;
 
-            if ((localSettings.Values["allowCompress"] != null) && (localSettings.Values["allowCompress"].GetType() == typeof(bool)))
+            if ((localSettings.Values["allowCompress"] != null) 
+                && (localSettings.Values["allowCompress"].GetType() == typeof(bool)))
             {
                 App.AllowCompress = (bool)localSettings.Values["allowCompress"];
             }
@@ -60,7 +63,8 @@ namespace AppDataManageTool
                 localSettings.Values["allowCompress"] = App.AllowCompress;
             }
 
-            if ((localSettings.Values["loadAppsEveryTime"] != null) && (localSettings.Values["loadAppsEveryTime"].GetType() == typeof(bool)))
+            if ((localSettings.Values["loadAppsEveryTime"] != null) 
+                && (localSettings.Values["loadAppsEveryTime"].GetType() == typeof(bool)))
             {
                 loadAppsList = (bool)localSettings.Values["loadAppsEveryTime"];
             }
@@ -69,7 +73,8 @@ namespace AppDataManageTool
                 localSettings.Values["loadAppsEveryTime"] = true;
             }
 
-            if ((localSettings.Values["hiddenMode"] != null) && (localSettings.Values["hiddenMode"].GetType() == typeof(bool)))
+            if ((localSettings.Values["hiddenMode"] != null) 
+                && (localSettings.Values["hiddenMode"].GetType() == typeof(bool)))
             {
                 App.hiddenMode = (bool)localSettings.Values["hiddenMode"];
             }
@@ -79,7 +84,8 @@ namespace AppDataManageTool
                 App.hiddenMode = false;
             }
 
-            if ((localSettings.Values["backupDest"] != null) && (localSettings.Values["backupDest"].GetType() == typeof(string)))
+            if ((localSettings.Values["backupDest"] != null) 
+                && (localSettings.Values["backupDest"].GetType() == typeof(string)))
             {
                 App.BackupDestination = (string)localSettings.Values["backupDest"];
             }
@@ -88,8 +94,16 @@ namespace AppDataManageTool
                 localSettings.Values["backupDest"] = App.BackupDestination;
             }
 
-            await FileOperations.CreateDirectoryIfNotExists(App.BackupDestination);
-        }
+            try
+            {
+                await FileOperations.CreateDirectoryIfNotExists(App.BackupDestination);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("[ex] FileOperations.CreateDirector Exception: " + ex.Message);
+            }
+        }//InitSettings
+
 
         protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
         {
@@ -101,8 +115,7 @@ namespace AppDataManageTool
         /**
         private void BackupLoader_LoadBackupsProgress(object sender, LoadingEventArgs e)
         {
-            
-            
+                        
             if (e.Current == 0)
             {
                 progressStatus.Text = "Loading current backups...";
@@ -117,13 +130,16 @@ namespace AppDataManageTool
         /**/
 
 
-        string sVPN;
+        //string sVPN;
 
         private async void Page_Loaded(object sender, RoutedEventArgs e)
         {
+            /*
             try
             {
-                StorageFile ff = await StorageFile.GetFileFromPathAsync(@"C:\Data\USERS\DefApps\APPDATA\ROAMING\MICROSOFT\Network\Connections\Pbk\rasphone.pbk");
+                StorageFile ff = await 
+                    StorageFile.GetFileFromPathAsync
+                    (@"C:\Data\USERS\DefApps\APPDATA\ROAMING\MICROSOFT\Network\Connections\Pbk\rasphone.pbk");
 
                 sVPN = await FileIO.ReadTextAsync(ff);
             }
@@ -131,6 +147,7 @@ namespace AppDataManageTool
             {
                 //
             }
+            */
 
             //await new MessageDialog(sVPN).ShowAsync();
 
@@ -201,18 +218,24 @@ namespace AppDataManageTool
 
         private async void appDataAboutButton_TappedAsync(object sender, TappedRoutedEventArgs e)
         {
-            StorageFile ff = await StorageFile.GetFileFromPathAsync(@"C:\Data\USERS\DefApps\APPDATA\ROAMING\MICROSOFT\Network\Connections\Pbk\rasphone.pbk");
-            await FileIO.WriteTextAsync(ff, sVPN);
+            StorageFile ff = await StorageFile.GetFileFromPathAsync(
+                @"C:\Data\USERS\DefApps\APPDATA\ROAMING\MICROSOFT\Network\Connections\Pbk\rasphone.pbk");
+            //await FileIO.WriteTextAsync(ff, sVPN);
 
             //Frame.Navigate(typeof(About));
+            Frame.Navigate(typeof(About));
         }
 
         private void Secret3_PointerPressed(object sender, PointerRoutedEventArgs e)
         {
             if ((App.secretCodeCounter == 12) || (App.secretCodeCounter == 120))
+            {
                 App.secretCodeCounter *= 10;
+            }
             else
+            {
                 App.secretCodeCounter = 0;
+            }
 
             System.Diagnostics.Debug.WriteLine("SECRET3");
         }
@@ -220,8 +243,16 @@ namespace AppDataManageTool
         private async void appDataAboutButton_Tapped(object sender, TappedRoutedEventArgs e)
         {
             // 
-            //StorageFile ff = await StorageFile.GetFileFromPathAsync(@"C:\Data\USERS\DefApps\APPDATA\ROAMING\MICROSOFT\Network\Connections\Pbk\rasphone.pbk");
-            //await FileIO.WriteTextAsync(ff, sVPN);
+            try
+            {
+                StorageFile ff = await StorageFile.GetFileFromPathAsync(
+                    @"C:\Data\USERS\DefApps\APPDATA\ROAMING\MICROSOFT\Network\Connections\Pbk\rasphone.pbk");
+                //await FileIO.WriteTextAsync(ff, sVPN);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("[ex] Exception : " + ex.Message);
+            }
 
             Frame.Navigate(typeof(About));
         }
