@@ -1,4 +1,4 @@
-# W10MAppDataManageTool 
+# W10MAppDataManageTool 2.5
 
 My fork of AppDataManageTool 2.2 Beta by Mahdi Ghiasi
 
@@ -19,9 +19,9 @@ Additionally, you can reset the state of apps, which is almost the same as reins
 
 
 ## Status
-- 2.4.0-Beta
-- Min. os. build downgraded from 15063 to 10240!
-- Win 11 Desktop / W10M "Astoria" (10570) experimenting started
+- 2.5.0
+- Min. os. build downgraded from 15063 to 10240.
+- Win 11 Desktop experimenting started (no success for Desktop mode yet)
 
 ## More Info
 
@@ -29,11 +29,11 @@ More details on xda-developers forum:
 https://forum.xda-developers.com/windows-10-mobile/windows-10-mobile-apps-and-games/app-app-data-manage-tool-t3443623
 
 ## References
-- https://github.com/MahdiGhiasi/ApplicationDataManageTool/
-- https://github.com/MahdiGhiasi/
+- https://github.com/MahdiGhiasi/ApplicationDataManageTool/ Original project
+- https://github.com/MahdiGhiasi/ Author and Developer of original AppDataManageTool 
 
 ## ..
 AS IS. No support. RnD only.
 
 ## .
-[m][e] 2022 
+[m][e] 2022 -- 2025
