@@ -1,4 +1,4 @@
-# W10MAppDataManageTool 2.5
+# W10MAppDataManageTool v2.5
 
 My fork of AppDataManageTool 2.2 Beta by Mahdi Ghiasi
 
@@ -19,8 +19,8 @@ Additionally, you can reset the state of apps, which is almost the same as reins
 
 
 ## Status
-- 2.5.0
-- Min. os. build downgraded from 15063 to 10240.
+- v2.5.0
+- Min. Win. SDK build = 10240.
 - Win 11 Desktop experimenting started (no success for Desktop mode yet)
 
 ## More Info
